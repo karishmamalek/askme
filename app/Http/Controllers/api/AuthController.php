@@ -71,7 +71,7 @@ class AuthController extends Controller
             $this->TBLUSERS_COL_USER_IMAGE => $userimage,
             $this->TBLUSERS_COL_USER_PASSWORD => Hash::make($request->password)
         ]);
-        
+        //$token = $user->createToken('auth_token')->plainTextToken;
         $user->save();
        
         $requestData = [$this->TBLUSERS_COL_USER_NAME => $request->name,$this->TBLUSERS_COL_USER_MIDDLENAME => $request->middle_name,$this->TBLUSERS_COL_USER_LASTNAME =>$request->last_name];
@@ -98,11 +98,18 @@ class AuthController extends Controller
             return jsonResponseData($this->ERROR_STATUS_CODE , 'Unauthorized',null);
         }
         $user = $request->user();
-        //$tokenResult = $user->createToken('Personal Access Token');
         $token = $user->createToken('auth_token')->plainTextToken;
-
-//        $token->save();
+        // print_r($token);
+        // die();
+        $userData = ['access_token' => $token];
+        return jsonResponseData($this->SUCCESS_STATUS_CODE , "Successfully Login", $userData);
         
-        return response()->json(['access_token' => $token]);
+    }
+
+    /**
+     * User Authentication
+     */
+    public function user(Request $request){
+        return $request->user();
     }
 }

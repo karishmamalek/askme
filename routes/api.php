@@ -23,4 +23,5 @@ Route::group(['prefix' => 'auth'],function(){
     Route::post('message',[AuthController::class,'message']);
     Route::post('register',[AuthController::class,'register']);
     Route::post('login',[AuthController::class,'login']);
+    Route::post('user',[AuthController::class,'user'])->middleware('auth:sanctum');
 });
