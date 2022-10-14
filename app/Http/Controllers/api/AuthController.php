@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\sendEmail;
 
 class AuthController extends Controller
 {
@@ -22,6 +23,7 @@ class AuthController extends Controller
         $this->TBLUSERS_COL_USER_EMAIL = config("constants.TBLUSERS_COL_USER_EMAIL");
         $this->TBLUSERS_COL_USER_IMAGE = config("constants.TBLUSERS_COL_USER_IMAGE");
         $this->TBLUSERS_COL_USER_PASSWORD = config("constants.TBLUSERS_COL_USER_PASSWORD");
+        $this->TBLUSERS_COL_USER_OTP = config("constants.TBLUSERS_COL_USER_OTP");
         $this->MSG_USER_CREATED = config("constants.MSG_USER_CREATED");
         $this->SUCCESS_STATUS_CODE = config("constants.SUCCESS_STATUS_CODE");
         $this->ERROR_STATUS_CODE = config("constants.ERROR_STATUS_CODE");
@@ -46,7 +48,8 @@ class AuthController extends Controller
             $this->TBLUSERS_COL_USER_LASTNAME => 'required|string',
             $this->TBLUSERS_COL_USER_EMAIL => 'required|string|email|unique:users',
             $this->TBLUSERS_COL_USER_IMAGE => 'required|mimes:jpg,png,jpeg',
-            $this->TBLUSERS_COL_USER_PASSWORD => 'required|string'
+            $this->TBLUSERS_COL_USER_PASSWORD => 'required|string',
+            $this->TBLUSERS_COL_USER_OTP => 'required|string'
         ]);
 
         if($validator->fails()) 
@@ -69,7 +72,8 @@ class AuthController extends Controller
             $this->TBLUSERS_COL_USER_LASTNAME => $request->last_name,
             $this->TBLUSERS_COL_USER_EMAIL => $request->email,
             $this->TBLUSERS_COL_USER_IMAGE => $userimage,
-            $this->TBLUSERS_COL_USER_PASSWORD => Hash::make($request->password)
+            $this->TBLUSERS_COL_USER_OTP => $request->otp,
+            $this->TBLUSERS_COL_USER_PASSWORD => Hash::make($request->password),
         ]);
         //$token = $user->createToken('auth_token')->plainTextToken;
         $user->save();
@@ -112,4 +116,25 @@ class AuthController extends Controller
     public function user(Request $request){
         return $request->user();
     }
+
+    /**
+     * Request OTP
+     */
+    public function requestotp(Request $request){
+        $otp = rand(1000,9999);
+        Log::info("otp =".$otp);
+        $user = User::where('email','=',$request->email);
+        if($user){
+           /* $mail_details = [
+                'subject' => 'Testing Askme Application OTP',
+                'body' => 'Your OTP is : '.$otp
+            ];*/
+          $data  = ['message' => 'This is a test!'];
+          Mail::to($request->email)->send(new sendEmail($data));
+          return jsonResponseData($this->SUCCESS_STATUS_CODE , "OTP Sent Successfully", null);
+        }else{
+            return jsonResponseData(401,'Invalid',null);
+        }
+    }
+
 }

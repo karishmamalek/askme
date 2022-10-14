@@ -10,7 +10,7 @@ return[
     'TBLUSERS_COL_USER_EMAIL' => 'email',
     'TBLUSERS_COL_USER_IMAGE' => 'image',   
     'TBLUSERS_COL_USER_PASSWORD' => 'password',
-   
+    'TBLUSERS_COL_USER_OTP' => 'otp',
     //Json Response Message information	
     'MSG_USER_CREATED' => 'User Created Successfully..',
     'SUCCESS_MSG' => 'Success',

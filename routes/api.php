@@ -24,4 +24,5 @@ Route::group(['prefix' => 'auth'],function(){
     Route::post('register',[AuthController::class,'register']);
     Route::post('login',[AuthController::class,'login']);
     Route::post('user',[AuthController::class,'user'])->middleware('auth:sanctum');
+    Route::any('request_otp',[AuthController::class,'requestotp']);
 });
