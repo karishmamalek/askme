@@ -28,6 +28,7 @@ class sendEmail extends Mailable
      */
     public function build()
     {
+        
         $address = 'sahkaritech@gmail.com';
         $subjec = 'This is a demo of askme';
         $name = 'Sahil Hamiranii';
@@ -38,5 +39,6 @@ class sendEmail extends Mailable
         ->replyTo($address,$name)
         ->subject($subjec)
         ->with(['test_message'=>$this->data['message']]);
+
     }
 }

@@ -125,10 +125,6 @@ class AuthController extends Controller
         Log::info("otp =".$otp);
         $user = User::where('email','=',$request->email);
         if($user){
-           /* $mail_details = [
-                'subject' => 'Testing Askme Application OTP',
-                'body' => 'Your OTP is : '.$otp
-            ];*/
           $data  = ['message' => 'This is a test!'];
           Mail::to($request->email)->send(new sendEmail($data));
           return jsonResponseData($this->SUCCESS_STATUS_CODE , "OTP Sent Successfully", null);
